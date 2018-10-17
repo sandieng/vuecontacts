@@ -78,8 +78,8 @@
         contactService.saveContact(contact)
           .then((response) => {
             console.log(response);
-            this.showSnackbar = false;
-            this.showInfo = '';
+            this.showSnackbar = true;
+            this.showInfo = 'New contact added.';
           })
           .catch((error) => {
             console.log(error);

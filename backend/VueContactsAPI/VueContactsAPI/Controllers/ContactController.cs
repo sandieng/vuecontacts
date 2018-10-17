@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using VueContactsAPI.ViewModels;
 
@@ -9,6 +10,7 @@ namespace VueContactsAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [EnableCors("CorsPolicy")]
     public class ContactController : ControllerBase
     {
         // GET api/contact
@@ -31,7 +33,7 @@ namespace VueContactsAPI.Controllers
                     Name = "Nemo Red",
                     Company = "Dolphin Paradise",
                     JobTitle = "Trainer",
-                    Email = "nemo@barracudapier.com.au",
+                    Email = "nemo@dolphinparadise.com.au",
                     Phone = "0423289337",
                     Notes = "That is it!"
                 },
@@ -47,8 +49,9 @@ namespace VueContactsAPI.Controllers
 
         // POST api/contact
         [HttpPost]
-        public void Post([FromBody] ContactVM value)
+        public IActionResult Post([FromBody] ContactVM value)
         {
+            return Ok(value);
         }
 
         // PUT api/contact/5
