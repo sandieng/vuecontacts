@@ -67,6 +67,22 @@
       </v-toolbar-title>
       <v-text-field flat solo-inverted hide-details prepend-inner-icon="search" label="Search" class="hidden-sm-and-down"></v-text-field>
       <v-spacer></v-spacer>
+      <v-btn
+          id="qsLoginBtn"
+          class="btn btn-primary btn-margin"
+          v-if="!authenticated"
+          @click="login()">
+            Log In
+      </v-btn>
+
+      <v-btn
+        id="qsLogoutBtn"
+        class="btn btn-primary btn-margin"
+        v-if="authenticated"
+        @click="logout()">
+          Log Out
+      </v-btn>
+
       <v-btn icon>
         <v-icon>apps</v-icon>
       </v-btn>
@@ -80,15 +96,22 @@
         <v-icon>add</v-icon>
       </v-btn>
 
-    <router-view></router-view>
-
   </v-app>
 </template>
 
 <script>
+import AuthService from './../auth/AuthService';
+
+const auth = new AuthService();
+
+const {
+  login, logout, authenticated, authNotifier,
+} = auth;
+
 export default {
   name: 'MainMenu',
   data: () => ({
+    logInMessage: 'Login',
     dialog: false,
     drawer: null,
     items: [
@@ -124,9 +147,7 @@ export default {
       { icon: 'chat_bubble', text: 'Send feedback' },
     ],
   }),
-  props: {
-    source: String,
-  },
+  props: ['auth', 'authenticated'],
   methods: {
     log(selectedMenu) {
       console.log(selectedMenu);
@@ -135,6 +156,16 @@ export default {
     contactAdd() {
       this.$router.push('/welcome');
     },
+    login,
+    logout,
   },
+  watch: {
+    authenticated(val) {
+      if (val) { this.logInMessage = 'Logout'; } else { this.logInMessage = 'Login'; }
+    },
+  },
+  updated() {
+    if (this.authenticated) { this.logInMessage = 'Logout'; } else { this.logInMessage = 'Login'; }
+  }
 };
 </script>

@@ -21,12 +21,8 @@ namespace VueContactsAPI
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            //services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
+            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
 
-            services.AddMvc(options =>
-            {
-                options.Filters.Add(new RequireHttpsAttribute());
-            }).SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
 
             services.AddCors(options => {
                 options.AddPolicy("CorsPolicy", builder => {
@@ -35,18 +31,6 @@ namespace VueContactsAPI
                            .AllowAnyMethod();
                            });
                 });
-
-            services.AddAuthentication(options => {
-                options.DefaultChallengeScheme = FacebookDefaults.AuthenticationScheme;
-                options.DefaultSignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-                options.DefaultAuthenticateScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-                })
-                .AddFacebook(options =>
-                {
-                    options.AppId = "";
-                    options.AppSecret = "";
-                })
-                .AddCookie();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -61,11 +45,7 @@ namespace VueContactsAPI
                 app.UseHsts();
             }
 
-            // Do we need this?
-            app.UseRewriter(new RewriteOptions().AddRedirectToHttps(301, 44393));
-            //app.UseHttpsRedirection();
-
-            app.UseAuthentication();
+            app.UseHttpsRedirection();
 
             app.UseMvc();
             app.UseCors("CorsPolicy");

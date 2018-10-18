@@ -52,29 +52,31 @@
 </template>
 
 <script>
-  import contactService from './../service';
+import contactService from './../service';
 
-  export default {
-    name: 'ContactAdd',
-    data() {
-      return {
-        dialog: true,
-        showSnackbar: false,
-        showInfo: '',
-        contact: {
-          name: '',
-          company: '',
-          jobTitle: '',
-          email: '',
-          phone: '',
-          notes: ''
-        }
-      };
-    },
+export default {
+  name: 'ContactAdd',
+  data() {
+    return {
+      dialog: true,
+      showSnackbar: false,
+      showInfo: '',
+      contact: {
+        name: '',
+        company: '',
+        jobTitle: '',
+        email: '',
+        phone: '',
+        notes: '',
+      },
+    };
+  },
 
-    methods: {
-      saveContact(contact) {
-        console.log(contact);
+  props: ['auth', 'authenticated'],
+
+  methods: {
+    saveContact(contact) {
+      if (this.authenticated) {
         contactService.saveContact(contact)
           .then((response) => {
             console.log(response);
@@ -85,24 +87,27 @@
             console.log(error);
             this.showSnackbar = true;
             this.showInfo = error;
-          })
+          });
         this.sanitiseContactForm();
-      },
-
-      sanitiseContactForm() {
-        // this.contact.name = '';
-        // this.contact. company = '';
-        // this.contact.jobTitle = '';
-        // this.contact.email = '';
-        // this.contact.phone = '';
-        // this.contact.notes = '';
-        this.contact = {};
-        console.log(this.contact);
-      },
-
-      backToHome() {
-        this.$router.push('/');
+      } else {
+        this.auth.login();
       }
-    }
-  };
+    },
+
+    sanitiseContactForm() {
+      // this.contact.name = '';
+      // this.contact. company = '';
+      // this.contact.jobTitle = '';
+      // this.contact.email = '';
+      // this.contact.phone = '';
+      // this.contact.notes = '';
+      this.contact = {};
+      console.log(this.contact);
+    },
+
+    backToHome() {
+      this.$router.push('/');
+    },
+  },
+};
 </script>

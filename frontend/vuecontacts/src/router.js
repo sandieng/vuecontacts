@@ -4,6 +4,7 @@ import Home from './views/Home.vue';
 import About from './views/About.vue';
 import ContactAdd from './components/ContactAdd.vue';
 import Welcome from './components/Welcome.vue';
+import Callback from './components/Callback.vue';
 
 Vue.use(VueRouter);
 
@@ -20,6 +21,11 @@ export default new VueRouter({
       path: '/about',
       name: 'about',
       component: About,
+    },
+    {
+      path: '/callback',
+      name: 'Callback',
+      component: Callback,
     },
     {
       path: '/contact/add',

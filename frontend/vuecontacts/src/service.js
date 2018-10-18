@@ -10,36 +10,22 @@ import axios from 'axios';
 //         return config;
 //     })
 
-// const contactServiceUrl = 'https://localhost:44393/api/contact';
-const contactServiceUrl = 'https://localhost:44393/api/auth/signin';
+const contactServiceUrl = 'https://localhost:44393/api/contact';
 
-
-// const contactService = {
-//     saveContact(contact) {
-//         return new Promise((resolve, reject) => {
-//             axios.post(contactServiceUrl, contact)
-//                 .then((response) => {
-//                     resolve(response);
-//                 })
-//                 .catch((error) => {
-//                     reject(error);
-//                 })
-//         })
-//     }
-// }
 
 const contactService = {
-    saveContact(contact) {
-        return new Promise((resolve, reject) => {
-            axios.get(contactServiceUrl)
-                .then((response) => {
-                    resolve(response);
-                })
-                .catch((error) => {
-                    reject(error);
-                })
+  saveContact(contact) {
+    return new Promise((resolve, reject) => {
+      axios.post(contactServiceUrl, contact)
+        .then((response) => {
+          resolve(response);
         })
-    }
-}
+        .catch((error) => {
+          reject(error);
+        });
+    });
+  },
+};
+
 
 export default contactService;
