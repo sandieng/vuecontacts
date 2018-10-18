@@ -55,7 +55,6 @@ export default class AuthService {
     localStorage.removeItem('expires_at');
     this.userProfile = null;
     this.authNotifier.emit('authChange', {authenticated: false });
-    this.$emit('authChange', false);
     // navigate to the home route
     router.replace('home');
   }

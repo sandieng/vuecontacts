@@ -1,6 +1,6 @@
 <template>
   <v-app >
-    <v-navigation-drawer :clipped="$vuetify.breakpoint.lgAndUp" v-model="drawer" fixed app>
+    <!-- <v-navigation-drawer :clipped="$vuetify.breakpoint.lgAndUp" v-model="drawer" fixed app>
       <v-list dense>
         <template v-for="item in items">
           <v-layout v-if="item.heading" :key="item.heading" row align-center>
@@ -94,19 +94,19 @@
 
       <v-btn fab bottom right color="pink" dark fixed @click="contactAdd()">
         <v-icon>add</v-icon>
-      </v-btn>
+      </v-btn> -->
 
   </v-app>
 </template>
 
 <script>
-import AuthService from './../auth/AuthService';
+// import AuthService from './../auth/AuthService';
 
-const auth = new AuthService();
+// const auth = new AuthService();
 
-const {
-  login, logout, authenticated, authNotifier,
-} = auth;
+// const {
+//   login, logout, authenticated, authNotifier,
+// } = auth;
 
 export default {
   name: 'MainMenu',
@@ -156,16 +156,16 @@ export default {
     contactAdd() {
       this.$router.push('/welcome');
     },
-    login,
-    logout,
+    // login,
+    // logout,
   },
-  watch: {
-    authenticated(val) {
-      if (val) { this.logInMessage = 'Logout'; } else { this.logInMessage = 'Login'; }
-    },
-  },
-  updated() {
-    if (this.authenticated) { this.logInMessage = 'Logout'; } else { this.logInMessage = 'Login'; }
-  }
+  // watch: {
+  //   authenticated(val) {
+  //     if (val) { this.logInMessage = 'Logout'; } else { this.logInMessage = 'Login'; }
+  //   },
+  // },
+  // updated() {
+  //   if (this.authenticated) { this.logInMessage = 'Logout'; } else { this.logInMessage = 'Login'; }
+  // }
 };
 </script>
