@@ -2,7 +2,7 @@
   <v-app id="vuecontacts">
     <!-- <main-menu :auth="auth" :authenticated="authenticated"></main-menu> -->
       <v-navigation-drawer :clipped="$vuetify.breakpoint.lgAndUp" v-model="drawer" fixed app>
-      <v-list dense>
+      <v-list dense v-if="authenticated">
         <template v-for="item in items">
           <v-layout v-if="item.heading" :key="item.heading" row align-center>
             <v-flex xs6>
@@ -181,9 +181,9 @@ export default {
   },
 
   watch: {
-    authChange(val) {
-      this.authenticated = val;
-    },
+     authenticated: function(val) {
+       console.log(val);
+    }
   },
 };
 </script>

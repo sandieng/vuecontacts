@@ -77,6 +77,13 @@ export default {
   methods: {
     saveContact(contact) {
       if (this.authenticated) {
+        var expiryTimestamp = +window.localStorage.getItem('expires_at');
+        var currentTimestamp = new Date().getTime();
+
+        if (expiryTimestamp < currentTimestamp) {
+          this.auth.login();
+        }
+
         contactService.saveContact(contact)
           .then((response) => {
             console.log(response);
