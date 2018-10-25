@@ -1,13 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 
 namespace VueContactsAPI.ViewModels
 {
-    public class ResponseVM
+    public class ResponseVM<T> where T: class
     {
-        public string Payload { get; set; }
+        public List<T> Payload { get; set; }
         public ErrorVM Error { get; set; }
     }
 }

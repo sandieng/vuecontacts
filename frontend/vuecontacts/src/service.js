@@ -35,6 +35,19 @@ const contactService = {
           reject(error);
         });
     });
+  },
+
+  listContact() {
+    const listContactUrl = contactServiceUrl;
+    return new Promise((resolve, reject) => {
+      axios.get(listContactUrl)
+        .then((response) => {
+          resolve(response);
+        })
+        .catch((error) => {
+          reject(error);
+        });
+    });
   }
 };
 

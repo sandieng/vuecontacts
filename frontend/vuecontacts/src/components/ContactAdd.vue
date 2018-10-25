@@ -33,7 +33,7 @@
               <v-text-field prepend-icon="mail" placeholder="Email" v-model="contact.email"></v-text-field>
             </v-flex>
             <v-flex xs12>
-              <v-text-field type="tel" prepend-icon="phone" placeholder="(00) 0000 - 0000" mask="phone" v-model="contact.phone"></v-text-field>
+              <v-text-field type="tel" prepend-icon="phone" placeholder="0000 000 000" mask="#### ### ###" v-model="contact.phone"></v-text-field>
             </v-flex>
             <v-flex xs12>
               <v-text-field

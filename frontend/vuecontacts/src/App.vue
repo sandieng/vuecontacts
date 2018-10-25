@@ -34,13 +34,12 @@
               <v-list-tile-action v-if="child.icon">
                 <v-icon>{{ child.icon }}</v-icon>
               </v-list-tile-action>
-              <v-list-tile-content>
-              <router-link :to="child.route">
-
-                <v-list-tile-title>
-                  {{ child.text }}
-                </v-list-tile-title>
-              </router-link>
+              <v-list-tile-content >
+                <router-link :to="child.route" style="text-decoration:none">
+                  <v-list-tile-title class="menu-padding-left" >
+                    {{ child.text }}
+                  </v-list-tile-title>
+                </router-link>
 
               </v-list-tile-content>
             </v-list-tile>
@@ -156,11 +155,21 @@ export default {
 
           children: [
             { text: 'Add new', route: '/contact/add' },
-            { text: 'Edit existing', route: '/welcome' },
-            { text: 'Delete existing', route: '/welcome' },
+            { text: 'List contacts', route: '/contact/list' },
+            { text: 'Export contacts', route: '/contact/export' },
           ],
         },
-        { icon: 'history', text: 'Frequently contacted' },
+        { icon: 'lock', 
+          'icon-alt': 'lock',
+          text: 'Logins',
+          model: false,
+         
+          children: [
+            { text: 'Add new', route: '/login/add' },
+            { text: 'List logins', route: '/login/list' },
+            { text: 'Export logins', route: '/login/export' },
+          ],
+        },
         { icon: 'content_copy', text: 'Duplicates' },
         {
           icon: 'keyboard_arrow_up',
@@ -175,8 +184,6 @@ export default {
             { text: 'Other contacts', route: '/welcome' },
           ],
         },
-        { icon: 'settings', text: 'Settings' },
-        { icon: 'chat_bubble', text: 'Send feedback' },
       ],
     };
     
@@ -216,3 +223,9 @@ export default {
   },
 };
 </script>
+
+<style scoped>
+  .menu-padding-left {
+  padding-left: 50px;
+}
+</style>

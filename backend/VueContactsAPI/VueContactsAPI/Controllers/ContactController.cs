@@ -18,21 +18,22 @@ namespace VueContactsAPI.Controllers
     public class ContactController : ControllerBase
     {
         private IContactRepository _contactRepository;
-        private ResponseVM _responseVM;
+        private ResponseVM<ContactVM> _responseVM;
         public ContactController(IContactRepository contactRepository)
         {
             _contactRepository = contactRepository;
-            _responseVM = new ResponseVM();
+            _responseVM = new ResponseVM<ContactVM>();
         }
 
         // GET api/contact
         [HttpGet]
-        public ActionResult<IEnumerable<ContactVM>> Get()
+        public ActionResult<ResponseVM<ContactVM>> Get()
         {
             var contacts = _contactRepository.GetAll();
             var contactList = Mapper.Map<IEnumerable<ContactVM>>(contacts);
 
-            return contactList.ToList();
+            _responseVM.Payload = contactList.ToList();
+            return _responseVM;
           
         }
 
