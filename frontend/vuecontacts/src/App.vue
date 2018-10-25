@@ -66,7 +66,16 @@
         <v-toolbar-side-icon @click.stop="drawer = !drawer"></v-toolbar-side-icon>
         <span class="hidden-sm-and-down">My Contacts</span>
       </v-toolbar-title>
-      <v-text-field flat solo-inverted hide-details prepend-inner-icon="search" label="Search" class="hidden-sm-and-down"></v-text-field>
+      <v-text-field flat solo-inverted hide-details 
+                    prepend-inner-icon="search" 
+                    label="Search by contact name or login name" 
+                    class="hidden-sm-and-down"
+                    v-model="searchCondition"
+                    @keyup.enter="goSearch()"
+
+                    >
+
+      </v-text-field>
       <v-spacer></v-spacer>
       <v-btn
           id="qsLoginBtn"
@@ -99,7 +108,9 @@
 
     <router-view 
         :auth="auth"
-        :authenticated="authenticated"></router-view>
+        :authenticated="authenticated"
+        :contacts="contacts"
+        ></router-view>
 
     <contact-footer></contact-footer>
   </v-app>
@@ -108,7 +119,9 @@
 <script>
 import AuthService from './auth/AuthService';
 
+import contactService from '@/service';
 // import MainMenu from './components/MainMenu.vue';
+import ContactSearch from './components/ContactSearch.vue';
 import ContactFooter from './components/Footer.vue';
 import Callback from './components/Callback.vue';
 
@@ -129,46 +142,49 @@ export default {
     return {
       auth,
       authenticated,
-             dialog: false,
-    drawer: null,
-    items: [
-      {
-        icon: 'contacts',
-        'icon-alt': 'contacts',
+      searchCondition: '',
+      contacts: [],
+      dialog: false,
+      drawer: null,
+      items: [
+        {
+          icon: 'contacts',
+          'icon-alt': 'contacts',
 
-        text: 'Contacts',
-        model: false,
+          text: 'Contacts',
+          model: false,
 
-        children: [
-          { text: 'Add new', route: '/contact/add' },
-          { text: 'Edit existing', route: '/welcome' },
-          { text: 'Delete existing', route: '/welcome' },
-        ],
-      },
-      { icon: 'history', text: 'Frequently contacted' },
-      { icon: 'content_copy', text: 'Duplicates' },
-      {
-        icon: 'keyboard_arrow_up',
-        'icon-alt': 'keyboard_arrow_down',
-        text: 'More',
-        model: false,
-        children: [
-          { text: 'Import', route: '/welcome' },
-          { text: 'Export', route: '/welcome' },
-          { text: 'Print', route: '/welcome' },
-          { text: 'Undo changes', route: '/welcome' },
-          { text: 'Other contacts', route: '/welcome' },
-        ],
-      },
-      { icon: 'settings', text: 'Settings' },
-      { icon: 'chat_bubble', text: 'Send feedback' },
-    ],
+          children: [
+            { text: 'Add new', route: '/contact/add' },
+            { text: 'Edit existing', route: '/welcome' },
+            { text: 'Delete existing', route: '/welcome' },
+          ],
+        },
+        { icon: 'history', text: 'Frequently contacted' },
+        { icon: 'content_copy', text: 'Duplicates' },
+        {
+          icon: 'keyboard_arrow_up',
+          'icon-alt': 'keyboard_arrow_down',
+          text: 'More',
+          model: false,
+          children: [
+            { text: 'Import', route: '/welcome' },
+            { text: 'Export', route: '/welcome' },
+            { text: 'Print', route: '/welcome' },
+            { text: 'Undo changes', route: '/welcome' },
+            { text: 'Other contacts', route: '/welcome' },
+          ],
+        },
+        { icon: 'settings', text: 'Settings' },
+        { icon: 'chat_bubble', text: 'Send feedback' },
+      ],
     };
     
   },
 
   components: {
     // MainMenu,
+    ContactSearch,
     ContactFooter,
     Callback,
   },
@@ -178,6 +194,19 @@ export default {
   methods: {
     login,
     logout,
+    goSearch() {
+      console.log(this.searchCondition);
+      contactService.search(this.searchCondition)
+         .then((response) => {
+           this.contacts = response.data;
+           this.$router.push({ name: 'contactSearch' })
+          })
+          .catch((error) => {
+            if (error.response.status === 401) {
+              this.auth.logout();
+            }
+          });
+    }
   },
 
   watch: {

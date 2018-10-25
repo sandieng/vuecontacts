@@ -86,14 +86,16 @@ export default {
 
         contactService.saveContact(contact)
           .then((response) => {
-            console.log(response);
             this.showSnackbar = true;
             this.showInfo = 'New contact added.';
           })
           .catch((error) => {
-            console.log(error);
             this.showSnackbar = true;
-            this.showInfo = error;
+            this.showInfo = error.response.data.message;
+
+            if (error.response.status === 401) {
+              this.auth.logout();
+            }
           });
         this.sanitiseContactForm();
       } else {

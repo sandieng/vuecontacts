@@ -2,8 +2,12 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
+using VueContactsAPI.Entities;
+using VueContactsAPI.Repositories;
 using VueContactsAPI.ViewModels;
 
 namespace VueContactsAPI.Controllers
@@ -13,45 +17,70 @@ namespace VueContactsAPI.Controllers
     [EnableCors("CorsPolicy")]
     public class ContactController : ControllerBase
     {
+        private IContactRepository _contactRepository;
+        private ResponseVM _responseVM;
+        public ContactController(IContactRepository contactRepository)
+        {
+            _contactRepository = contactRepository;
+            _responseVM = new ResponseVM();
+        }
+
         // GET api/contact
         [HttpGet]
         public ActionResult<IEnumerable<ContactVM>> Get()
         {
-            return new ContactVM[]
-            {
-                new ContactVM
-                {
-                    Name = "Dory Blue",
-                    Company = "Barracuda Pier",
-                    JobTitle = "Fish Scaler",
-                    Email = "dory@barracudapier.com.au",
-                    Phone = "0413304735",
-                    Notes = "Aha moment!"
-                },
-                new ContactVM
-                {
-                    Name = "Nemo Red",
-                    Company = "Dolphin Paradise",
-                    JobTitle = "Trainer",
-                    Email = "nemo@dolphinparadise.com.au",
-                    Phone = "0423289337",
-                    Notes = "That is it!"
-                },
-            };
+            var contacts = _contactRepository.GetAll();
+            var contactList = Mapper.Map<IEnumerable<ContactVM>>(contacts);
+
+            return contactList.ToList();
+          
         }
 
         // GET api/contact/5
-        [HttpGet("{id}")]
-        public ActionResult<string> Get(int id)
+        [HttpGet("{search}")]
+        public ActionResult<IEnumerable<ContactVM>> Get(string search)
         {
-            return "value";
+            var contacts = _contactRepository.GetAll().Where(x => x.Name.Contains(search));
+            var contactList = Mapper.Map<IEnumerable<ContactVM>>(contacts);
+
+            return contactList.ToList();
         }
 
         // POST api/contact
         [HttpPost]
-        public IActionResult Post([FromBody] ContactVM value)
+        public IActionResult Post([FromBody] ContactVM contactVM)
         {
-            return Ok(value);
+            if (!ModelState.IsValid)
+            {
+                _responseVM.Error = new ErrorVM
+                {
+                    Message = "Please provide all required data for a contact.",
+                    InnerMessage = ""
+                };
+
+                return BadRequest(_responseVM);
+            }
+
+            try
+            {
+                var newContact = Mapper.Map<Contact>(contactVM);
+                _contactRepository.Save(newContact);
+
+                return Ok();
+            }
+
+            catch (Exception ex)
+            {
+
+                _responseVM.Error = new ErrorVM
+                {
+                    Message = "Failed to save new contact.",
+                    InnerMessage = ex.Message
+                };
+
+                return UnprocessableEntity(_responseVM);
+            }
+
         }
 
         // PUT api/contact/5

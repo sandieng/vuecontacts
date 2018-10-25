@@ -3,6 +3,7 @@ import VueRouter from 'vue-router';
 import Home from './views/Home.vue';
 import About from './views/About.vue';
 import ContactAdd from './components/ContactAdd.vue';
+import ContactSearch from './components/ContactSearch.vue';
 import Welcome from './components/Welcome.vue';
 import Callback from './components/Callback.vue';
 
@@ -31,6 +32,11 @@ export default new VueRouter({
       path: '/contact/add',
       name: 'contactAdd',
       component: ContactAdd,
+    },
+    {
+      path: '/contact/search',
+      name: 'contactSearch',
+      component: ContactSearch,
     },
     {
       path: '/welcome',
