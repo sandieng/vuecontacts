@@ -1,8 +1,6 @@
-﻿using System;
+﻿using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore;
 using VueContactsAPI.Entities;
 
 namespace VueContactsAPI.Repositories
@@ -16,7 +14,6 @@ namespace VueContactsAPI.Repositories
         {
             _context = context;
             _contactEntity = _context.Set<Contact>();
-
         }
 
         public void Delete(int id)
@@ -38,11 +35,11 @@ namespace VueContactsAPI.Repositories
 
         public void Save(Contact contact)
         {
-            _context.Entry(contact).State = Microsoft.EntityFrameworkCore.EntityState.Added;
+            _context.Entry(contact).State = EntityState.Added;
             _context.SaveChanges();
         }
 
-        public void Update(Contact contact)
+        public void Update()
         {
             _context.SaveChanges();
         }

@@ -102,7 +102,10 @@
 
 
       <v-btn fab bottom right color="pink" dark fixed @click="contactAdd()">
-        <v-icon>add</v-icon>
+        <v-icon class="quick-button-padding-bottom">add</v-icon>
+      </v-btn>
+      <v-btn fab bottom left color="green" dark fixed @click="loginAdd()">
+        <v-icon class="quick-button-padding-bottom">add</v-icon>
       </v-btn>
 
     <router-view 
@@ -213,6 +216,12 @@ export default {
               this.auth.logout();
             }
           });
+    },
+    contactAdd() {
+      this.$router.push({name: 'contactAdd'});
+    },
+    loginAdd() {
+      this.$router.push({name: 'contactAdd'});
     }
   },
 
@@ -226,6 +235,9 @@ export default {
 
 <style scoped>
   .menu-padding-left {
-  padding-left: 50px;
-}
+    padding-left: 50px;
+  }
+  .quick-button-padding-bottom {
+    padding-bottom: 50px;
+  }
 </style>

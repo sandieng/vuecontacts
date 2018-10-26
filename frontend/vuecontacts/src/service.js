@@ -48,6 +48,34 @@ const contactService = {
           reject(error);
         });
     });
+  },
+
+  updateContact(contact) {
+    const updateContactUrl = contactServiceUrl +`/${contact.id}`;
+
+    return new Promise((resolve) => {
+      axios.put(updateContactUrl, contact)
+        .then((response) => {
+          resolve(response);
+          })
+        .catch((error) => {
+          return error;
+        });
+      })
+  },
+
+  deleteContact(id) {
+    const deleteContactUrl = contactServiceUrl +`/${id}`;
+
+    return new Promise((resolve) => {
+      axios.delete(deleteContactUrl)
+        .then((response) => {
+          resolve(response);
+          })
+        .catch((error) => {
+          return error;
+        });
+      })
   }
 };
 

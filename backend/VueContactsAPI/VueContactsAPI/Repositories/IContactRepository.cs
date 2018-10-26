@@ -12,6 +12,6 @@ namespace VueContactsAPI.Repositories
         IEnumerable<Contact> GetAll();
         Contact GetById(int id);
         void Delete(int id);
-        void Update(Contact contact);
+        void Update();
     }
 }

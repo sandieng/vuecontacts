@@ -128,17 +128,34 @@
                 this.dialog = true;
             },
 
+            deleteContact(contact) {
+              const index = this.contactList.indexOf(contact)
+              let ok = confirm('Are you sure you want to delete this contact?') && this.contactList.splice(index, 1);
+              if (ok) {
+                contactService.deleteContact(contact.id)
+                  .then((response) => {
+                      this.showSnackbar = true;      
+                      this.message = 'Contact deleted.';
+                    })
+                    .catch((showSnackbar) => {
+                      this.showSnackbar = true;
+                      this.message = showSnackbar.response.data.message;
+                });
+              }
+            },
+          
             save () {
                 if (this.editedIndex > -1) {
                     Object.assign(this.contactList[this.editedIndex], this.editedItem);
 
                     // Update change in the backend
-                    let contact = {id: this.editedItem.Id, 
+                    let contact = {id: this.editedItem.id, 
                                 name: this.editedItem.name, 
                                 company: this.editedItem.company, 
+                                jobTitle: this.editedItem.jobTitle,
                                 email: this.editedItem.email,
-                                phone: this.phone,
-                                notes: this.notes
+                                phone: this.editedItem.phone,
+                                notes: this.editedItem.notes
                                 };
                     contactService.updateContact(contact)
                     .then(() => {

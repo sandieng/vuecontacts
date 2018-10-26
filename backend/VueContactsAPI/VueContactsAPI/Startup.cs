@@ -67,6 +67,7 @@ namespace VueContactsAPI
             {
                 cfg.CreateMap<ContactVM, Contact>();
                 cfg.CreateMap<Contact, ContactVM>();
+                cfg.CreateMap<Contact, Contact>();
             });
         }
     }

@@ -1,11 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using AutoMapper;
-using Microsoft.AspNetCore.Authorization;
+﻿using AutoMapper;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using VueContactsAPI.Entities;
 using VueContactsAPI.Repositories;
 using VueContactsAPI.ViewModels;
@@ -18,10 +16,13 @@ namespace VueContactsAPI.Controllers
     public class ContactController : ControllerBase
     {
         private IContactRepository _contactRepository;
+        private ResponseSingleVM<ContactVM> _responseSingleVM;
         private ResponseVM<ContactVM> _responseVM;
+
         public ContactController(IContactRepository contactRepository)
         {
             _contactRepository = contactRepository;
+            _responseSingleVM = new ResponseSingleVM<ContactVM>();
             _responseVM = new ResponseVM<ContactVM>();
         }
 
@@ -53,13 +54,13 @@ namespace VueContactsAPI.Controllers
         {
             if (!ModelState.IsValid)
             {
-                _responseVM.Error = new ErrorVM
+                _responseSingleVM.Error = new ErrorVM
                 {
                     Message = "Please provide all required data for a contact.",
                     InnerMessage = ""
                 };
 
-                return BadRequest(_responseVM);
+                return BadRequest(_responseSingleVM);
             }
 
             try
@@ -73,27 +74,54 @@ namespace VueContactsAPI.Controllers
             catch (Exception ex)
             {
 
-                _responseVM.Error = new ErrorVM
+                _responseSingleVM.Error = new ErrorVM
                 {
                     Message = "Failed to save new contact.",
                     InnerMessage = ex.Message
                 };
 
-                return UnprocessableEntity(_responseVM);
+                return UnprocessableEntity(_responseSingleVM);
             }
 
         }
 
         // PUT api/contact/5
         [HttpPut("{id}")]
-        public void Put(int id, [FromBody] ContactVM value)
+        public IActionResult Put(int id, [FromBody] ContactVM contact)
         {
+            var contactFound = _contactRepository.GetById(contact.Id);
+            if (contactFound != null)
+            {
+                // Map updated details to the found contact
+                contactFound.Name = contact.Name;
+                contactFound.Company = contact.Company;
+                contactFound.JobTitle = contact.JobTitle;
+                contactFound.Email = contact.Email;
+                contactFound.Phone = contact.Phone;
+                contactFound.Notes = contact.Notes;
+
+                _contactRepository.Update();
+
+                return Ok();
+            }
+
+            return NotFound();
         }
 
         // DELETE api/contact/5
         [HttpDelete("{id}")]
-        public void Delete(int id)
+        public IActionResult Delete(int id)
         {
+            var contactFound = _contactRepository.GetById(id);
+
+            if (contactFound != null)
+            {
+                _contactRepository.Delete(id);
+
+                return Ok();
+            }
+
+            return NotFound();
         }
     }
 }
