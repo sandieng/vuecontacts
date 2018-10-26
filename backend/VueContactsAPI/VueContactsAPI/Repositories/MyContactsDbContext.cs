@@ -11,5 +11,6 @@ namespace VueContactsAPI.Repositories
         }
 
         public DbSet<Contact> Contacts { get; set; }
+        public DbSet<Login> Logins { get; set; }
     }
 }

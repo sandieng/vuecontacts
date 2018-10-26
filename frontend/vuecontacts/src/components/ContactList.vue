@@ -43,37 +43,38 @@
         </v-card>
       </v-dialog>
     </v-toolbar>
-    <v-data-table
-      :headers="headers"
-      :items="contactList"
-      hide-actions
-      class="elevation-1"
-    >
-      <template slot="items" slot-scope="props">
-        <td>{{ props.item.name }}</td>
-        <td class="text-xs-left">{{ props.item.company }}</td>
-        <td>{{ props.item.jobTitle}}</td>
-        <td>{{ props.item.email}}</td>
-        <td>{{ props.item.phone}}</td>
-        <td>{{ props.item.notes}}</td>
-        <td class="justify-center layout px-0">
-          <v-icon
-            small
-            class="mr-2"
-            @click="editContact(props.item)"
-          >
-            edit
-          </v-icon>
-          <v-icon
-            small
-            @click="deleteContact(props.item)"
-          >
-            delete
-          </v-icon>
-        </td>
-      </template>
-     
-    </v-data-table>
+    <v-flex xs12 align-center offset-sm2>
+      <v-data-table
+        :headers="headers"
+        :items="contactList"
+        hide-actions
+        class="elevation-1"
+      >
+        <template slot="items" slot-scope="props">
+          <td>{{ props.item.name }}</td>
+          <td class="text-xs-left">{{ props.item.company }}</td>
+          <td>{{ props.item.jobTitle}}</td>
+          <td>{{ props.item.email}}</td>
+          <td>{{ props.item.phone}}</td>
+          <td>{{ props.item.notes}}</td>
+          <td class="justify-center layout px-0">
+            <v-icon
+              small
+              class="mr-2"
+              @click="editContact(props.item)"
+            >
+              edit
+            </v-icon>
+            <v-icon
+              small
+              @click="deleteContact(props.item)"
+            >
+              delete
+            </v-icon>
+          </td>
+        </template>
+      </v-data-table>
+    </v-flex>
   </div>
 </template>
 

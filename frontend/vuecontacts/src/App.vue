@@ -71,11 +71,25 @@
                     class="hidden-sm-and-down"
                     v-model="searchCondition"
                     @keyup.enter="goSearch()"
-
                     >
 
       </v-text-field>
+      
+      <v-tooltip top>
+        <v-btn  slot="activator" fab color="pink" dark @click="contactAdd()">
+          <v-icon >add</v-icon>
+        </v-btn>
+        <span>Add new contact</span>
+      </v-tooltip>
+      <v-tooltip top>
+        <v-btn  slot="activator" fab color="green" dark @click="loginAdd()">
+          <v-icon >add</v-icon>
+        </v-btn>
+        <span>Add new login </span>
+      </v-tooltip>
+
       <v-spacer></v-spacer>
+
       <v-btn
           id="qsLoginBtn"
           class="btn btn-primary btn-margin"
@@ -99,14 +113,6 @@
         <v-icon>notifications</v-icon>
       </v-btn>
     </v-toolbar>
-
-
-      <v-btn fab bottom right color="pink" dark fixed @click="contactAdd()">
-        <v-icon class="quick-button-padding-bottom">add</v-icon>
-      </v-btn>
-      <v-btn fab bottom left color="green" dark fixed @click="loginAdd()">
-        <v-icon class="quick-button-padding-bottom">add</v-icon>
-      </v-btn>
 
     <router-view 
         :auth="auth"
@@ -205,7 +211,6 @@ export default {
     login,
     logout,
     goSearch() {
-      console.log(this.searchCondition);
       contactService.search(this.searchCondition)
          .then((response) => {
            this.contacts = response.data;
@@ -226,18 +231,25 @@ export default {
   },
 
   watch: {
-     authenticated: function(val) {
+     authenticated(val) {
        console.log(val);
+      },
+
+    '$route' (to, from) {
+      if (!this.auth.isAuthenticated()) {
+        this.auth.logout();
+      }
     }
-  },
-};
+  }
+}
+
 </script>
 
 <style scoped>
   .menu-padding-left {
     padding-left: 50px;
   }
-  .quick-button-padding-bottom {
-    padding-bottom: 50px;
+  .quick-button-padding-top {
+    padding-bottom: 100px;
   }
 </style>
