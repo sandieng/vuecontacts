@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
@@ -9,6 +10,9 @@ using VueContactsAPI.ViewModels;
 
 namespace VueContactsAPI.Controllers
 {
+    [Route("api/[controller]")]
+    [ApiController]
+    [EnableCors("CorsPolicy")]
     public class LoginController : Controller
     {
         private ILoginRepository _loginRepository;
@@ -31,7 +35,6 @@ namespace VueContactsAPI.Controllers
 
             _responseVM.Payload = loginList.ToList();
             return _responseVM;
-
         }
 
         // GET api/login/5

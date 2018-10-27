@@ -37,6 +37,8 @@ namespace VueContactsAPI
                 });
 
             services.AddTransient<IContactRepository, ContactRepository>();
+            services.AddTransient<ILoginRepository, LoginRepository>();
+
             services.AddTransient<IJwtService, JwtService>();
 
         }

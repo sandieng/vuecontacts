@@ -14,22 +14,23 @@
             <v-container grid-list-md>
               <v-layout wrap>
                   <v-flex xs12>
-                  <v-text-field v-model="editedItem.name" label="Contact Name"></v-text-field>
+                  <v-text-field v-model="editedItem.name" label="Login Name"></v-text-field>
                 </v-flex>
                   <v-flex xs12>
-                  <v-text-field v-model="editedItem.company" label="Company"></v-text-field>
-                </v-flex>
-                <v-flex xs12>
-                  <v-text-field v-model="editedItem.jobTitle" label="Job Title"></v-text-field>
-                </v-flex>
-                <v-flex xs12>
-                  <v-text-field v-model="editedItem.email" label="Email"></v-text-field>
-                </v-flex>
-                <v-flex xs12>
-                  <v-text-field v-model="editedItem.phone" label="Phone" mask="#### ### ###"></v-text-field>
-                </v-flex>
-                <v-flex xs12>
                   <v-text-field v-model="editedItem.notes" label="Notes"></v-text-field>
+                </v-flex>
+                <v-flex xs12>
+                  <v-text-field v-model="editedItem.websiteUrl" label="Website"></v-text-field>
+                </v-flex>
+                <v-flex xs12>
+                  <v-text-field v-model="editedItem.loginName" label="Login Name"></v-text-field>
+                </v-flex>
+                <v-flex xs6>
+                  <v-text-field v-model="editedItem.loginPassword" label="Login Password" :type="passwordSetting">
+                  </v-text-field>
+                </v-flex>
+                <v-flex xs6>
+                      <v-icon @click="togglePassword()">{{padlockIcon}}</v-icon>
                 </v-flex>
               </v-layout>
             </v-container>
@@ -46,28 +47,34 @@
     <v-flex xs12 align-center offset-sm2>
       <v-data-table
         :headers="headers"
-        :items="contactList"
+        :items="loginList"
         hide-actions
         class="elevation-1"
       >
         <template slot="items" slot-scope="props">
           <td>{{ props.item.name }}</td>
-          <td class="text-xs-left">{{ props.item.company }}</td>
-          <td>{{ props.item.jobTitle}}</td>
-          <td>{{ props.item.email}}</td>
-          <td>{{ props.item.phone}}</td>
           <td>{{ props.item.notes}}</td>
+          <td>{{ props.item.websiteUrl}}</td>
+          <td>{{ props.item.loginName}}</td>
+           
+          <td v-if="passwordSetting === 'text'">
+            {{ props.item.loginPassword}}
+              <v-icon @click="togglePassword()">{{padlockIcon}}</v-icon>
+          </td>
+          
+          <td v-else>...<v-icon @click="togglePassword()">{{padlockIcon}}</v-icon></td>
+
           <td class="justify-center layout px-0">
             <v-icon
               small
               class="mr-2"
-              @click="editContact(props.item)"
+              @click="editLogin(props.item)"
             >
               edit
             </v-icon>
             <v-icon
               small
-              @click="deleteContact(props.item)"
+              @click="deleteLogin(props.item)"
             >
               delete
             </v-icon>
@@ -79,10 +86,10 @@
 </template>
 
 <script>
-    import myContactService from './../service';
+    import myLoginService from './../service';
 
     export default {
-        name: 'ContactList',
+        name: 'LoginList',
         data() {
             return {
                 showSnackbar: false,
@@ -90,18 +97,19 @@
                 dialog: false,
                   headers: [
                
-                    { text: 'Contact\'s Name', value: 'name' },
+                    { text: 'Login\'s Name', value: 'name' },
+                    { text: 'Notes', value: 'notes' },
 
-                    { text: 'Company', value: 'company' },
-                    { text: 'Job Title', value: 'jobTitle' },
-                    { text: 'Email', value: 'email' },
-                    { text: 'Phone', value: 'phone' },
-                    { text: 'Notes', value: 'notes' }
+                    { text: 'Website', value: 'websiteUrl' },
+                    { text: 'User Name', value: 'loginName' },
+                    { text: 'User Password', value: 'loginPassword' },
                 ],
-                contactList: [],   
+                loginList: [],   
                 editedIndex: -1,
                 editedItem: {
-                } 
+                },
+                passwordSetting: 'password',
+                padlockIcon: 'lock'
             }
         },
         watch: {
@@ -110,31 +118,45 @@
             }
         },
         beforeMount() {
-            myContactService.listContact()
+            myLoginService.listLogin()
                 .then((response) => {
                     this.error = false;
-                    this.contactList = response.data.payload;
+                    this.loginList = response.data.payload;
                 })
                 .catch((error) => {
                     this.error = true;
                     this.errorMessage = error.response.data.message;
                 })
         },
+        computed: {
+       
+        },
         methods: {
-           editContact(contact) {
-                this.editedIndex = this.contactList.indexOf(contact);
-                this.editedItem = Object.assign({}, contact);
+            togglePassword() {
+              if (this.passwordSetting === 'password') {
+                this.passwordSetting = 'text';
+                this.padlockIcon = 'lock';
+              }
+              else {
+                this.passwordSetting = 'password';
+                this.padlockIcon = 'unlock';
+              }
+            },
+
+           editLogin(login) {
+                this.editedIndex = this.loginList.indexOf(login);
+                this.editedItem = Object.assign({}, login);
                 this.dialog = true;
             },
 
-            deleteContact(contact) {
-              const index = this.contactList.indexOf(contact)
-              let ok = confirm('Are you sure you want to delete this contact?') && this.contactList.splice(index, 1);
+            deleteLogin(login) {
+              const index = this.loginList.indexOf(login)
+              let ok = confirm('Are you sure you want to delete this login?') && this.loginList.splice(index, 1);
               if (ok) {
-                myContactService.deleteContact(contact.id)
+                myloginService.deleteLogin(login.id)
                   .then((response) => {
                       this.showSnackbar = true;      
-                      this.message = 'Contact deleted.';
+                      this.message = 'Login deleted.';
                     })
                     .catch((showSnackbar) => {
                       this.showSnackbar = true;
@@ -145,28 +167,28 @@
           
             save () {
                 if (this.editedIndex > -1) {
-                    Object.assign(this.contactList[this.editedIndex], this.editedItem);
+                    Object.assign(this.loginList[this.editedIndex], this.editedItem);
 
                     // Update change in the backend
-                    let contact = {id: this.editedItem.id, 
+                    let login = {id: this.editedItem.id, 
                                 name: this.editedItem.name, 
-                                company: this.editedItem.company, 
-                                jobTitle: this.editedItem.jobTitle,
-                                email: this.editedItem.email,
-                                phone: this.editedItem.phone,
-                                notes: this.editedItem.notes
+                                notes: this.editedItem.notes, 
+                                websiteUrl: this.editedItem.websiteUrl,
+                                loginName: this.editedItem.loginName,
+                                loginPassword: this.editedItem.loginPassword,
                                 };
-                    myContactService.updateContact(contact)
-                    .then(() => {
+
+                    myloginService.updateLogin(login)
+                      .then(() => {
                             this.showSnackbar = true;      
-                            this.message = 'Contact\'s data updated.';
+                            this.message = 'Login\'s data updated.';
                         })
-                        .catch((error) => {
-                            this.showSnackbar = true;
-                            this.message = error.response.data.message;
-                        });
+                      .catch((error) => {
+                          this.showSnackbar = true;
+                          this.message = error.response.data.message;
+                      });
                 } else {
-                    this.contactList.push(this.editedItem);
+                    this.loginList.push(this.editedItem);
                 }
 
                 this.close()

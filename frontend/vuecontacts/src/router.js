@@ -1,12 +1,17 @@
 import Vue from 'vue';
 import VueRouter from 'vue-router';
+
+import Callback from './components/Callback.vue';
+import Welcome from './components/Welcome.vue';
 import Home from './views/Home.vue';
 import About from './views/About.vue';
+
 import ContactAdd from './components/ContactAdd.vue';
 import ContactSearch from './components/ContactSearch.vue';
 import ContactList from './components/ContactList.vue';
-import Welcome from './components/Welcome.vue';
-import Callback from './components/Callback.vue';
+import LoginAdd from './components/LoginAdd.vue';
+import LoginList from './components/LoginList.vue';
+
 
 Vue.use(VueRouter);
 
@@ -18,6 +23,11 @@ export default new VueRouter({
       path: '/home',
       name: 'home',
       component: Home,
+    },
+    {
+      path: '/welcome',
+      name: 'welcome',
+      component: Welcome,
     },
     {
       path: '/about',
@@ -45,9 +55,14 @@ export default new VueRouter({
       component: ContactList,
     },
     {
-      path: '/welcome',
-      name: 'welcome',
-      component: Welcome,
+      path: '/login/add',
+      name: 'loginAdd',
+      component: LoginAdd,
+    },
+    {
+      path: '/login/list',
+      name: 'loginList',
+      component: LoginList,
     },
   ],
 });

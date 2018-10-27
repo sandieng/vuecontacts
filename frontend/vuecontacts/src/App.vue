@@ -1,5 +1,12 @@
 <template>
   <v-app id="vuecontacts">
+    <v-snackbar v-model="showSnackbar" :timeout="6000" :top="true">
+      {{ message }}
+      <v-btn color="pink" flat @click="showSnackbar = false">
+        Close
+      </v-btn>
+    </v-snackbar>
+
     <!-- <main-menu :auth="auth" :authenticated="authenticated"></main-menu> -->
       <v-navigation-drawer :clipped="$vuetify.breakpoint.lgAndUp" v-model="drawer" fixed app>
       <v-list dense v-if="authenticated">
@@ -67,7 +74,7 @@
       </v-toolbar-title>
       <v-text-field flat solo-inverted hide-details 
                     prepend-inner-icon="search" 
-                    label="Search by contact name or login name" 
+                    label="Type in a contact name or login name to search then hit Enter ..." 
                     class="hidden-sm-and-down"
                     v-model="searchCondition"
                     @keyup.enter="goSearch()"
@@ -127,7 +134,7 @@
 <script>
 import AuthService from './auth/AuthService';
 
-import contactService from '@/service';
+import myContactService from '@/service';
 // import MainMenu from './components/MainMenu.vue';
 import ContactSearch from './components/ContactSearch.vue';
 import ContactFooter from './components/Footer.vue';
@@ -150,6 +157,8 @@ export default {
     return {
       auth,
       authenticated,
+      showSnackbar: false,
+      message: '',
       searchCondition: '',
       contacts: [],
       dialog: false,
@@ -211,7 +220,7 @@ export default {
     login,
     logout,
     goSearch() {
-      contactService.search(this.searchCondition)
+      myContactService.search(this.searchCondition)
          .then((response) => {
            this.contacts = response.data;
            this.$router.push({ name: 'contactSearch' })
@@ -226,7 +235,7 @@ export default {
       this.$router.push({name: 'contactAdd'});
     },
     loginAdd() {
-      this.$router.push({name: 'contactAdd'});
+      this.$router.push({name: 'loginAdd'});
     }
   },
 
@@ -237,6 +246,8 @@ export default {
 
     '$route' (to, from) {
       if (!this.auth.isAuthenticated()) {
+        this.showSnackbar = true;
+        this.message = 'Your session has timed out, please log in.';
         this.auth.logout();
       }
     }

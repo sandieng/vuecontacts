@@ -35,7 +35,6 @@ namespace VueContactsAPI.Controllers
 
             _responseVM.Payload = contactList.ToList();
             return _responseVM;
-          
         }
 
         // GET api/contact/5

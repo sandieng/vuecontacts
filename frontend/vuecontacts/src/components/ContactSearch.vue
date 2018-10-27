@@ -29,7 +29,7 @@
 </template>
 
 <script>
-import contactService from './../service';
+import myContactService from './../service';
 
 export default {
   name: 'ContactSearch',

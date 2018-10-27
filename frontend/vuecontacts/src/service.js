@@ -11,7 +11,9 @@ axios.interceptors.request.use(function(config) {
     })
 
 const contactServiceUrl = 'https://localhost:44393/api/contact';
-const contactService = {
+const loginServiceUrl = 'https://localhost:44393/api/login';
+
+const myContactService = {
   saveContact(contact) {
     return new Promise((resolve, reject) => {
       axios.post(contactServiceUrl, contact)
@@ -76,7 +78,61 @@ const contactService = {
           return error;
         });
       })
-  }
+  },
+
+  // Login related service calls
+  saveLogin(login) {
+    return new Promise((resolve, reject) => {
+      axios.post(loginServiceUrl, login)
+        .then((response) => {
+          resolve(response);
+        })
+        .catch((error) => {
+          reject(error);
+        });
+    });
+  },
+
+  listLogin() {
+    const listLogintUrl = loginServiceUrl;
+    return new Promise((resolve, reject) => {
+      axios.get(listLogintUrl)
+        .then((response) => {
+          resolve(response);
+        })
+        .catch((error) => {
+          reject(error);
+        });
+    });
+  },
+
+  updateLogin(login) {
+    const updateLoginUrl = loginServiceUrl +`/${login.id}`;
+
+    return new Promise((resolve) => {
+      axios.put(updateLoginUrl, login)
+        .then((response) => {
+          resolve(response);
+          })
+        .catch((error) => {
+          return error;
+        });
+      })
+  },
+
+  deleteLogin(id) {
+    const deleteLoginUrl = loginServiceUrl +`/${id}`;
+
+    return new Promise((resolve) => {
+      axios.delete(deleteLoginUrl)
+        .then((response) => {
+          resolve(response);
+          })
+        .catch((error) => {
+          return error;
+        });
+      })
+  },
 };
 
 // const contactServiceUrl = 'http://localhost:3010/api/private';
@@ -96,4 +152,4 @@ const contactService = {
 // };
 
 
-export default contactService;
+export default myContactService;

@@ -1,7 +1,7 @@
 <template>
   <v-container fluid>
     <v-snackbar v-model="showSnackbar" :timeout="6000" :top="true">
-      {{ showInfo }}
+      {{ message }}
       <v-btn color="pink" flat @click="showSnackbar = false">
         Close
       </v-btn>
@@ -52,7 +52,7 @@
 </template>
 
 <script>
-import contactService from './../service';
+import myContactService from './../service';
 
 export default {
   name: 'ContactAdd',
@@ -60,7 +60,7 @@ export default {
     return {
       dialog: true,
       showSnackbar: false,
-      showInfo: '',
+      message: '',
       contact: {
         name: '',
         company: '',
@@ -84,14 +84,14 @@ export default {
           this.auth.login();
         }
 
-        contactService.saveContact(contact)
+        myContactService.saveContact(contact)
           .then((response) => {
             this.showSnackbar = true;
-            this.showInfo = 'New contact added.';
+            this.message = 'New contact added.';
           })
           .catch((error) => {
             this.showSnackbar = true;
-            this.showInfo = error.response.data.message;
+            this.message = error.response.data.message;
 
             if (error.response.status === 401) {
               this.auth.logout();
