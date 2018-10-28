@@ -1,10 +1,12 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Cors;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using VueContactsAPI.Entities;
+using VueContactsAPI.Infrastructures;
 using VueContactsAPI.Repositories;
 using VueContactsAPI.ViewModels;
 
@@ -15,12 +17,14 @@ namespace VueContactsAPI.Controllers
     [EnableCors("CorsPolicy")]
     public class ContactController : ControllerBase
     {
+        private IHostingEnvironment _environment;
         private IContactRepository _contactRepository;
         private ResponseSingleVM<ContactVM> _responseSingleVM;
         private ResponseVM<ContactVM> _responseVM;
 
-        public ContactController(IContactRepository contactRepository)
+        public ContactController(IContactRepository contactRepository, IHostingEnvironment environment)
         {
+            _environment = environment;
             _contactRepository = contactRepository;
             _responseSingleVM = new ResponseSingleVM<ContactVM>();
             _responseVM = new ResponseVM<ContactVM>();
@@ -121,6 +125,26 @@ namespace VueContactsAPI.Controllers
             }
 
             return NotFound();
+        }
+
+        // POST api/contact/export
+        [HttpPost]
+        [Route("export")]
+        public IActionResult Export()
+        {
+            var fileName = $"{DateTime.Now.Day.ToString()}_{DateTime.Now.Month.ToString()}_{DateTime.Now.Year.ToString()}.xlsx";
+            var contactList = _contactRepository.GetAll().ToList();
+
+            // Download location from the browser
+            string url = string.Format("{0}://{1}/{2}", Request.Scheme, Request.Host, $"MyContacts_{fileName}");
+            //string url = string.Format("{0}\\{1}", _environment.ContentRootPath, $"MyContacts_{fileName}");
+
+
+            var result = ExportToExcel.Download<Contact>(_environment.WebRootPath, contactList, $"MyContacts_{fileName}");
+            //var result = ExportToExcel.Download<Contact>(_environment.ContentRootPath, contactList, $"MyContacts_{fileName}");
+
+
+            return Ok(url);
         }
     }
 }

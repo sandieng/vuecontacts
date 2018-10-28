@@ -1,10 +1,12 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using VueContactsAPI.Entities;
+using VueContactsAPI.Infrastructures;
 using VueContactsAPI.Repositories;
 using VueContactsAPI.ViewModels;
 
@@ -15,15 +17,20 @@ namespace VueContactsAPI.Controllers
     [EnableCors("CorsPolicy")]
     public class LoginController : Controller
     {
+        private IConfiguration _configuration;
         private ILoginRepository _loginRepository;
         private ResponseSingleVM<LoginVM> _responseSingleVM;
         private ResponseVM<LoginVM> _responseVM;
+        private string _passPhrase = "";
 
-        public LoginController(ILoginRepository loginRepository)
+        public LoginController(ILoginRepository loginRepository, IConfiguration configuration)
         {
+            _configuration = configuration;
             _loginRepository = loginRepository;
             _responseSingleVM = new ResponseSingleVM<LoginVM>();
             _responseVM = new ResponseVM<LoginVM>();
+
+            _passPhrase = _configuration["SymmetricEncryption:PassPhrase"];
         }
 
         // GET api/login
@@ -32,6 +39,12 @@ namespace VueContactsAPI.Controllers
         {
             var logins = _loginRepository.GetAll();
             var loginList = Mapper.Map<IEnumerable<LoginVM>>(logins);
+
+            foreach (var login in loginList)
+            {
+                var decryptedPassword = Crypto.Decrypt(login.LoginPassword, _passPhrase);
+                login.LoginPassword = decryptedPassword;
+            }
 
             _responseVM.Payload = loginList.ToList();
             return _responseVM;
@@ -43,6 +56,12 @@ namespace VueContactsAPI.Controllers
         {
             var logins = _loginRepository.GetAll().Where(x => x.Name.Contains(search));
             var loginList = Mapper.Map<IEnumerable<LoginVM>>(logins);
+
+            foreach (var login in loginList)
+            {
+                var decryptedPassword = Crypto.Decrypt(login.LoginPassword, _passPhrase);
+                login.LoginPassword = decryptedPassword;
+            }
 
             return loginList.ToList();
         }
@@ -65,6 +84,9 @@ namespace VueContactsAPI.Controllers
             try
             {
                 var newContact = Mapper.Map<Login>(LoginVM);
+                var encryptedPassword = Crypto.Encrypt(newContact.LoginPassword, _passPhrase);
+                newContact.LoginPassword = encryptedPassword;
+
                 _loginRepository.Save(newContact);
 
                 return Ok();
@@ -91,10 +113,12 @@ namespace VueContactsAPI.Controllers
             var loginFound = _loginRepository.GetById(Login.Id);
             if (loginFound != null)
             {
+                var encryptedPassword = Crypto.Encrypt(Login.LoginPassword, _passPhrase);
+
                 // Map updated details to the found Login
                 loginFound.Name = Login.Name;
                 loginFound.LoginName = Login.LoginName;
-                loginFound.LoginPassword = Login.LoginPassword;
+                loginFound.LoginPassword = encryptedPassword;
                 loginFound.WebSiteUrl = Login.WebSiteUrl;
                 loginFound.Notes = Login.Notes;
 

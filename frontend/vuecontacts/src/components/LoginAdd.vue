@@ -28,13 +28,16 @@
                 prepend-icon="comment" placeholder="Description for the new login" v-model="login.notes"></v-text-field>
             </v-flex>
             <v-flex xs12>
-              <v-text-field prepend-icon="business" placeholder="Website" v-model="login.websiteUrl"></v-text-field>
+              <v-text-field prepend-icon="business" placeholder="Login website" v-model="login.websiteUrl"></v-text-field>
             </v-flex>
             <v-flex xs12>
               <v-text-field prepend-icon="person" placeholder="User name to login for the site" v-model="login.loginName"></v-text-field>
             </v-flex>
-            <v-flex xs12>
-              <v-text-field prepend-icon="lock" placeholder="User password to login for the site" :type="'password'" required v-model="login.loginPassword"></v-text-field>
+            <v-flex xs6>
+              <v-text-field prepend-icon="vpn_key" placeholder="User password to login for the site" :type="passwordMode" required v-model="login.loginPassword" ></v-text-field>
+            </v-flex>
+            <v-flex xs6>
+              <v-icon @click="togglePassword()">{{padlockIcon}}</v-icon>
             </v-flex>
      
           </v-layout>
@@ -66,12 +69,25 @@
           loginName: '',
           loginPassword: '',
         },
+        passwordMode: 'password',
+        padlockIcon: 'lock_open'
       }
     },
   
     props: ['auth', 'authenticated'],
 
     methods: {
+       togglePassword() {
+              if (this.passwordMode === 'password') {
+                this.passwordMode = 'text';
+                this.padlockIcon = 'lock';
+              }
+              else {
+                this.passwordMode = 'password';
+                this.padlockIcon = 'lock_open';
+              }
+            },
+
       saveLogin(login) {
         if (this.authenticated) {
           var expiryTimestamp = +window.localStorage.getItem('expires_at');

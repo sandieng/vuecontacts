@@ -26,7 +26,7 @@
                   <v-text-field v-model="editedItem.loginName" label="Login Name"></v-text-field>
                 </v-flex>
                 <v-flex xs6>
-                  <v-text-field v-model="editedItem.loginPassword" label="Login Password" :type="passwordSetting">
+                  <v-text-field v-model="editedItem.loginPassword" label="Login Password" :type="passwordMode">
                   </v-text-field>
                 </v-flex>
                 <v-flex xs6>
@@ -54,10 +54,10 @@
         <template slot="items" slot-scope="props">
           <td>{{ props.item.name }}</td>
           <td>{{ props.item.notes}}</td>
-          <td>{{ props.item.websiteUrl}}</td>
+          <td><a :href="props.item.webSiteUrl" target="_blank">{{ props.item.webSiteUrl}}</a></td>
           <td>{{ props.item.loginName}}</td>
            
-          <td v-if="passwordSetting === 'text'">
+          <td v-if="passwordMode === 'text'">
             {{ props.item.loginPassword}}
               <v-icon @click="togglePassword()">{{padlockIcon}}</v-icon>
           </td>
@@ -100,7 +100,7 @@
                     { text: 'Login\'s Name', value: 'name' },
                     { text: 'Notes', value: 'notes' },
 
-                    { text: 'Website', value: 'websiteUrl' },
+                    { text: 'Website', value: 'webSiteUrl' },
                     { text: 'User Name', value: 'loginName' },
                     { text: 'User Password', value: 'loginPassword' },
                 ],
@@ -108,8 +108,8 @@
                 editedIndex: -1,
                 editedItem: {
                 },
-                passwordSetting: 'password',
-                padlockIcon: 'lock'
+                passwordMode: 'password',
+                padlockIcon: 'lock_open'
             }
         },
         watch: {
@@ -133,13 +133,13 @@
         },
         methods: {
             togglePassword() {
-              if (this.passwordSetting === 'password') {
-                this.passwordSetting = 'text';
+              if (this.passwordMode === 'password') {
+                this.passwordMode = 'text';
                 this.padlockIcon = 'lock';
               }
               else {
-                this.passwordSetting = 'password';
-                this.padlockIcon = 'unlock';
+                this.passwordMode = 'password';
+                this.padlockIcon = 'lock_open';
               }
             },
 
@@ -153,7 +153,7 @@
               const index = this.loginList.indexOf(login)
               let ok = confirm('Are you sure you want to delete this login?') && this.loginList.splice(index, 1);
               if (ok) {
-                myloginService.deleteLogin(login.id)
+                myLoginService.deleteLogin(login.id)
                   .then((response) => {
                       this.showSnackbar = true;      
                       this.message = 'Login deleted.';
@@ -178,7 +178,7 @@
                                 loginPassword: this.editedItem.loginPassword,
                                 };
 
-                    myloginService.updateLogin(login)
+                    myLoginService.updateLogin(login)
                       .then(() => {
                             this.showSnackbar = true;      
                             this.message = 'Login\'s data updated.';

@@ -9,8 +9,12 @@ import About from './views/About.vue';
 import ContactAdd from './components/ContactAdd.vue';
 import ContactSearch from './components/ContactSearch.vue';
 import ContactList from './components/ContactList.vue';
+import ContactExport from './components/ContactExport.vue';
+
 import LoginAdd from './components/LoginAdd.vue';
 import LoginList from './components/LoginList.vue';
+import LoginSearch from './components/LoginSearch.vue';
+
 
 
 Vue.use(VueRouter);
@@ -55,6 +59,11 @@ export default new VueRouter({
       component: ContactList,
     },
     {
+      path: '/contact/export',
+      name: 'contactExport',
+      component: ContactExport,
+    },
+    {
       path: '/login/add',
       name: 'loginAdd',
       component: LoginAdd,
@@ -63,6 +72,11 @@ export default new VueRouter({
       path: '/login/list',
       name: 'loginList',
       component: LoginList,
+    },
+    {
+      path: '/login/search',
+      name: 'loginSearch',
+      component: LoginSearch,
     },
   ],
 });

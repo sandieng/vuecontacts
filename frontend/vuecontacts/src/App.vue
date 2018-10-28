@@ -125,6 +125,7 @@
         :auth="auth"
         :authenticated="authenticated"
         :contacts="contacts"
+        :logins="logins"
         ></router-view>
 
     <contact-footer></contact-footer>
@@ -161,6 +162,7 @@ export default {
       message: '',
       searchCondition: '',
       contacts: [],
+      logins: [],
       dialog: false,
       drawer: null,
       items: [
@@ -220,7 +222,8 @@ export default {
     login,
     logout,
     goSearch() {
-      myContactService.search(this.searchCondition)
+      if (this.searchCondition.includes('contact:')) {
+        myContactService.searchContact(this.searchCondition)
          .then((response) => {
            this.contacts = response.data;
            this.$router.push({ name: 'contactSearch' })
@@ -230,6 +233,19 @@ export default {
               this.auth.logout();
             }
           });
+      } else {
+         myContactService.searchLogin(this.searchCondition)
+         .then((response) => {
+           this.logins = response.data;
+           this.$router.push({ name: 'loginSearch' })
+          })
+          .catch((error) => {
+            if (error.response.status === 401) {
+              this.auth.logout();
+            }
+          });
+      }
+
     },
     contactAdd() {
       this.$router.push({name: 'contactAdd'});

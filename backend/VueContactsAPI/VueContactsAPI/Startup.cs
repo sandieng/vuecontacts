@@ -57,6 +57,7 @@ namespace VueContactsAPI
 
 
             app.UseHttpsRedirection();
+            //app.UseSpaStaticFiles();
 
             app.UseCors("CorsPolicy");
 

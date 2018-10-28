@@ -26,7 +26,9 @@ const myContactService = {
     });
   },
 
-  search(searchName) {
+  searchContact(searchName) {
+    searchName = searchName.replace("contact: ", "");
+
     const searchUrl = contactServiceUrl + `/${searchName}`;
     return new Promise((resolve, reject) => {
       axios.get(searchUrl)
@@ -80,10 +82,38 @@ const myContactService = {
       })
   },
 
+  exportContact(id) {
+    const exportContactUrl = contactServiceUrl + '/export';
+
+    return new Promise((resolve) => {
+      axios.post(exportContactUrl)
+        .then((response) => {
+          resolve(response);
+          })
+        .catch((error) => {
+          return error;
+        });
+      })
+  },
+
   // Login related service calls
   saveLogin(login) {
     return new Promise((resolve, reject) => {
       axios.post(loginServiceUrl, login)
+        .then((response) => {
+          resolve(response);
+        })
+        .catch((error) => {
+          reject(error);
+        });
+    });
+  },
+
+  searchLogin(searchName) {
+    searchName = searchName.replace("login: ", "");
+    const searchUrl = loginServiceUrl + `/${searchName}`;
+    return new Promise((resolve, reject) => {
+      axios.get(searchUrl)
         .then((response) => {
           resolve(response);
         })
