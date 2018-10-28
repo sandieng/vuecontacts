@@ -82,11 +82,11 @@ const myContactService = {
       })
   },
 
-  exportContact(id) {
+  exportContact() {
+    const downloadLocation = {downloadLocation: "C:\\VueVaults\\vuecontacts\\frontend\\vuecontacts\\public" };
     const exportContactUrl = contactServiceUrl + '/export';
-
     return new Promise((resolve) => {
-      axios.post(exportContactUrl)
+      axios.post(exportContactUrl, downloadLocation)
         .then((response) => {
           resolve(response);
           })

@@ -7,14 +7,16 @@
       </v-btn>
     </v-snackbar>
 
-  <v-flex xs12 align-center offset-sm2>
+  <v-flex  xs12 align-center justify-space-between offset-sm2>
      <v-card class="paddingtop">
         <v-card-title class="grey lighten-4 py-4 title">
-          Contact list location
+          Contact list location: 
+           <div>
+             <span>&nbsp;</span>
+             <a :href="url">{{url}}</a>
+          </div>
         </v-card-title>
-        <div>
-          <a :href="url">{{url}}</a>
-        </div>
+       
      </v-card>
   </v-flex>
  </v-container>
@@ -63,6 +65,6 @@
 
 <style scoped>
 .paddingtop {
-  padding-top: 150px;
+  padding-top: 100px;
 }
 </style>

@@ -74,10 +74,11 @@
       </v-toolbar-title>
       <v-text-field flat solo-inverted hide-details 
                     prepend-inner-icon="search" 
-                    label="Type in a contact name or login name to search then hit Enter ..." 
+                    label="Example: 'contact: Sandi Eng' then Enter. Or 'login: Medicare' then Enter" 
                     class="hidden-sm-and-down"
                     v-model="searchCondition"
                     @keyup.enter="goSearch()"
+                    xs12
                     >
 
       </v-text-field>

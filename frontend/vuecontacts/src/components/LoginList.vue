@@ -20,7 +20,7 @@
                   <v-text-field v-model="editedItem.notes" label="Notes"></v-text-field>
                 </v-flex>
                 <v-flex xs12>
-                  <v-text-field v-model="editedItem.websiteUrl" label="Website"></v-text-field>
+                  <v-text-field v-model="editedItem.webSiteUrl" label="Website"></v-text-field>
                 </v-flex>
                 <v-flex xs12>
                   <v-text-field v-model="editedItem.loginName" label="Login Name"></v-text-field>
@@ -173,7 +173,7 @@
                     let login = {id: this.editedItem.id, 
                                 name: this.editedItem.name, 
                                 notes: this.editedItem.notes, 
-                                websiteUrl: this.editedItem.websiteUrl,
+                                webSiteUrl: this.editedItem.webSiteUrl,
                                 loginName: this.editedItem.loginName,
                                 loginPassword: this.editedItem.loginPassword,
                                 };
