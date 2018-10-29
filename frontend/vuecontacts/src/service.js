@@ -83,10 +83,9 @@ const myContactService = {
   },
 
   exportContact() {
-    const downloadLocation = {downloadLocation: "C:\\VueVaults\\vuecontacts\\frontend\\vuecontacts\\public" };
     const exportContactUrl = contactServiceUrl + '/export';
     return new Promise((resolve) => {
-      axios.post(exportContactUrl, downloadLocation)
+      axios.get(exportContactUrl)
         .then((response) => {
           resolve(response);
           })

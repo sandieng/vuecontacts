@@ -7,7 +7,7 @@
       </v-btn>
     </v-snackbar>
 
-  <v-flex  xs12 align-center justify-space-between offset-sm2>
+  <!-- <v-flex  xs12 align-center justify-space-between offset-sm2>
      <v-card class="paddingtop">
         <v-card-title class="grey lighten-4 py-4 title">
           Contact list location: 
@@ -18,7 +18,7 @@
         </v-card-title>
        
      </v-card>
-  </v-flex>
+  </v-flex> -->
  </v-container>
 
 
@@ -40,24 +40,45 @@
     props: ['auth', 'authenticated'],
 
     methods: {
+      base64ToArrayBuffer(data) {
+        var binaryString = window.atob(data);
+        var binaryLen = binaryString.length;
+        var bytes = new Uint8Array(binaryLen);
+        for (var i = 0; i < binaryLen; i++) {
+          var ascii = binaryString.charCodeAt(i);
+          bytes[i] = ascii;
+        }
+        return bytes;
+      },
 
+      saveByteArray(reportName, byte) {
+        var blob = new Blob([byte], {type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+        var link = document.createElement('a');
+        link.href = window.URL.createObjectURL(blob);
+        var fileName = reportName;
+        link.download = fileName;
+        link.click();
+      }
     },
 
     beforeMount() {
       myContactService.exportContact()
-       .then((response) => {
+        .then((response) => {
             this.showSnackbar = true;
             this.message = 'Contact list exported.';
             this.url = response.data;
-          })
-          .catch((error) => {
-            this.showSnackbar = true;
-            this.message = error.response.data.message;
 
-            if (error.response.status === 401) {
-              this.auth.logout();
-            }
-          });
+            var excelBuffer = this.base64ToArrayBuffer(response.data);
+            this.saveByteArray("MyContacts.xlsx", excelBuffer);
+        })
+        .catch((error) => {
+          this.showSnackbar = true;
+          this.message = error.response.data.message;
+
+          if (error.response.status === 401) {
+            this.auth.logout();
+          }
+        });
     }
   }
 </script>

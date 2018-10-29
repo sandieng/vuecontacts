@@ -2,9 +2,9 @@
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
-using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using VueContactsAPI.Entities;
 using VueContactsAPI.Infrastructures;
@@ -129,38 +129,32 @@ namespace VueContactsAPI.Controllers
         }
 
         // POST api/contact/export
-        [HttpPost]
+        [HttpGet]
         [Route("export")]
-        public IActionResult Export([FromBody] object downloadLocation)
+        public IActionResult Export()
         {
             var fileName = $"{DateTime.Now.Day.ToString()}_{DateTime.Now.Month.ToString()}_{DateTime.Now.Year.ToString()}.xlsx";
             var contactList = _contactRepository.GetAll().ToList();
+            byte[] fileContent;
+
+            var fileLocation = Path.Combine(_environment.WebRootPath, $"MyContacts_{fileName}");
 
             // Download location from the browser
-            string url = string.Format("{0}/{1}", Request.Headers["Origin"], $"MyContacts_{fileName}");
+            var result = ExportToExcel.Download<Contact>(fileLocation, contactList);
+            var path = _environment.WebRootPath + $"\\MyContacts_{fileName}";
+            using (BinaryReader b = new BinaryReader(System.IO.File.Open(path, FileMode.Open)))
 
-            //string url = string.Format("{0}://{1}/{2}", Request.Scheme, Request.Host, $"MyContacts_{fileName}");
-            //string url = string.Format("{0}\\{1}", _environment.ContentRootPath, $"MyContacts_{fileName}");
+            {
+                fileContent = new byte[b.BaseStream.Length];
+                //stream.Read(fileContent, 0, (int)stream.Length);
+                fileContent = b.ReadBytes((int)b.BaseStream.Length);
 
-            var downloadPath = JsonConvert.SerializeObject(downloadLocation);
-            dynamic path = JsonConvert.DeserializeObject(downloadPath);
-            var result = ExportToExcel.Download<Contact>(path["downloadLocation"].ToString(), contactList, $"MyContacts_{fileName}");
-            //var result = ExportToExcel.Download<Contact>(_environment.WebRootPath, contactList, $"MyContacts_{fileName}");
-            //var result = ExportToExcel.Download<Contact>(_environment.ContentRootPath, contactList, $"MyContacts_{fileName}");
+                System.IO.File.WriteAllBytes(@"c:/temp/junk.xlsx", fileContent);
 
+            }
 
-            return Ok(url);
-
-            // Old code
-            //var fileName = $"{DateTime.Now.Day.ToString()}_{DateTime.Now.Month.ToString()}_{DateTime.Now.Year.ToString()}.xlsx";
-            //var contactList = _contactRepository.GetAll().ToList();
-
-            //// Download location from the browser
-            ////string url = string.Format("{0}://{1}/{2}", Request.Scheme, Request.Host, $"MyContacts_{fileName}");
-
-            ////var result = ExportToExcel.Download<Contact>(_environment.WebRootPath, contactList, $"MyContacts_{fileName}");
-
-            //return Ok(url);
+            System.IO.File.Delete(fileLocation);
+            return Ok(fileContent);
         }
     }
 }
