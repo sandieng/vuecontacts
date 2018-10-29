@@ -162,6 +162,19 @@ const myContactService = {
         });
       })
   },
+
+  exportLogin() {
+    const exportLoginUrl = loginServiceUrl + '/export';
+    return new Promise((resolve) => {
+      axios.get(exportLoginUrl)
+        .then((response) => {
+          resolve(response);
+          })
+        .catch((error) => {
+          return error;
+        });
+      })
+  },
 };
 
 // const contactServiceUrl = 'http://localhost:3010/api/private';

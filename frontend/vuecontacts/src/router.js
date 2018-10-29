@@ -14,7 +14,7 @@ import ContactExport from './components/ContactExport.vue';
 import LoginAdd from './components/LoginAdd.vue';
 import LoginList from './components/LoginList.vue';
 import LoginSearch from './components/LoginSearch.vue';
-
+import LoginExport from './components/LoginExport.vue';
 
 
 Vue.use(VueRouter);
@@ -77,6 +77,11 @@ export default new VueRouter({
       path: '/login/search',
       name: 'loginSearch',
       component: LoginSearch,
+    },
+    {
+      path: '/login/export',
+      name: 'loginExport',
+      component: LoginExport,
     },
   ],
 });

@@ -128,7 +128,7 @@ namespace VueContactsAPI.Controllers
             return NotFound();
         }
 
-        // POST api/contact/export
+        // GET api/contact/export
         [HttpGet]
         [Route("export")]
         public IActionResult Export()

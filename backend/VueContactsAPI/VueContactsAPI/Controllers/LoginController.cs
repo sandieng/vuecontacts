@@ -1,9 +1,11 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Cors;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using VueContactsAPI.Entities;
 using VueContactsAPI.Infrastructures;
@@ -18,14 +20,16 @@ namespace VueContactsAPI.Controllers
     public class LoginController : Controller
     {
         private IConfiguration _configuration;
+        private IHostingEnvironment _environment;
         private ILoginRepository _loginRepository;
         private ResponseSingleVM<LoginVM> _responseSingleVM;
         private ResponseVM<LoginVM> _responseVM;
         private string _passPhrase = "";
 
-        public LoginController(ILoginRepository loginRepository, IConfiguration configuration)
+        public LoginController(ILoginRepository loginRepository, IConfiguration configuration, IHostingEnvironment environment)
         {
             _configuration = configuration;
+            _environment = environment;
             _loginRepository = loginRepository;
             _responseSingleVM = new ResponseSingleVM<LoginVM>();
             _responseVM = new ResponseVM<LoginVM>();
@@ -144,6 +148,35 @@ namespace VueContactsAPI.Controllers
             }
 
             return NotFound();
+        }
+
+        // GET api/login/export
+        [HttpGet]
+        [Route("export")]
+        public IActionResult Export()
+        {
+            var fileName = $"{DateTime.Now.Day.ToString()}_{DateTime.Now.Month.ToString()}_{DateTime.Now.Year.ToString()}.xlsx";
+            var loginList = _loginRepository.GetAll().ToList();
+            byte[] fileContent;
+
+            var fileLocation = Path.Combine(_environment.WebRootPath, $"MyContacts_{fileName}");
+
+            // Download location from the browser
+            var result = ExportToExcel.Download<Login>(fileLocation, loginList);
+            var path = _environment.WebRootPath + $"\\MyContacts_{fileName}";
+            using (BinaryReader b = new BinaryReader(System.IO.File.Open(path, FileMode.Open)))
+
+            {
+                fileContent = new byte[b.BaseStream.Length];
+                //stream.Read(fileContent, 0, (int)stream.Length);
+                fileContent = b.ReadBytes((int)b.BaseStream.Length);
+
+                System.IO.File.WriteAllBytes(@"c:/temp/junk.xlsx", fileContent);
+
+            }
+
+            System.IO.File.Delete(fileLocation);
+            return Ok(fileContent);
         }
     }
 }

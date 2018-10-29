@@ -34,7 +34,7 @@ namespace VueContactsAPI.Infrastructures
                     foreach (var propInfo in objectList[i].GetType().GetProperties())
                     {
                         var value = propInfo.GetValue(objectList[i]);
-                        var strValue = value.ToString();
+                        var strValue = value?.ToString();
                         row.CreateCell(j).SetCellValue(strValue);
                         j++;
                     }
