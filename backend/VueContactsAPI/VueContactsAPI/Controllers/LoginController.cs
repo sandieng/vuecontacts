@@ -164,15 +164,12 @@ namespace VueContactsAPI.Controllers
             // Download location from the browser
             var result = ExportToExcel.Download<Login>(fileLocation, loginList);
             var path = _environment.WebRootPath + $"\\MyContacts_{fileName}";
-            using (BinaryReader b = new BinaryReader(System.IO.File.Open(path, FileMode.Open)))
+            using (BinaryReader br = new BinaryReader(System.IO.File.Open(path, FileMode.Open)))
 
             {
-                fileContent = new byte[b.BaseStream.Length];
+                fileContent = new byte[br.BaseStream.Length];
                 //stream.Read(fileContent, 0, (int)stream.Length);
-                fileContent = b.ReadBytes((int)b.BaseStream.Length);
-
-                System.IO.File.WriteAllBytes(@"c:/temp/junk.xlsx", fileContent);
-
+                fileContent = br.ReadBytes((int)br.BaseStream.Length);
             }
 
             System.IO.File.Delete(fileLocation);
