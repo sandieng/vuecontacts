@@ -57,13 +57,13 @@ const myContactService = {
   updateContact(contact) {
     const updateContactUrl = contactServiceUrl +`/${contact.id}`;
 
-    return new Promise((resolve) => {
+    return new Promise((resolve, reject) => {
       axios.put(updateContactUrl, contact)
         .then((response) => {
           resolve(response);
           })
         .catch((error) => {
-          return error;
+          reject(error);
         });
       })
   },
@@ -71,26 +71,26 @@ const myContactService = {
   deleteContact(id) {
     const deleteContactUrl = contactServiceUrl +`/${id}`;
 
-    return new Promise((resolve) => {
+    return new Promise((resolve, reject) => {
       axios.delete(deleteContactUrl)
         .then((response) => {
           resolve(response);
           })
         .catch((error) => {
-          return error;
+          reject(error);
         });
       })
   },
 
   exportContact() {
     const exportContactUrl = contactServiceUrl + '/export';
-    return new Promise((resolve) => {
+    return new Promise((resolve, reject) => {
       axios.get(exportContactUrl)
         .then((response) => {
           resolve(response);
           })
         .catch((error) => {
-          return error;
+          reject(error);
         });
       })
   },
@@ -138,13 +138,13 @@ const myContactService = {
   updateLogin(login) {
     const updateLoginUrl = loginServiceUrl +`/${login.id}`;
 
-    return new Promise((resolve) => {
+    return new Promise((resolve, reject) => {
       axios.put(updateLoginUrl, login)
         .then((response) => {
           resolve(response);
           })
         .catch((error) => {
-          return error;
+          reject(error);
         });
       })
   },
@@ -152,26 +152,26 @@ const myContactService = {
   deleteLogin(id) {
     const deleteLoginUrl = loginServiceUrl +`/${id}`;
 
-    return new Promise((resolve) => {
+    return new Promise((resolve, reject) => {
       axios.delete(deleteLoginUrl)
         .then((response) => {
           resolve(response);
           })
         .catch((error) => {
-          return error;
+          reject(error);
         });
       })
   },
 
   exportLogin() {
     const exportLoginUrl = loginServiceUrl + '/export';
-    return new Promise((resolve) => {
+    return new Promise((resolve, reject) => {
       axios.get(exportLoginUrl)
         .then((response) => {
           resolve(response);
           })
         .catch((error) => {
-          return error;
+          reject(error);
         });
       })
   },

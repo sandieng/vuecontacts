@@ -88,6 +88,7 @@ export default {
           .then((response) => {
             this.showSnackbar = true;
             this.message = 'New contact added.';
+            this.$store.dispatch('addNewContactToNotification', contact);
           })
           .catch((error) => {
             this.showSnackbar = true;

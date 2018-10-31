@@ -117,9 +117,14 @@
       <v-btn icon>
         <v-icon>apps</v-icon>
       </v-btn>
-      <v-btn icon>
-        <v-icon>notifications</v-icon>
-      </v-btn>
+      <v-badge overlap>
+        <span slot="badge">{{notificationCount}}</span>
+          <v-avatar color="red">
+          <v-btn icon >
+            <v-icon>notifications</v-icon>
+          </v-btn>
+          </v-avatar>
+      </v-badge>
     </v-toolbar>
 
     <router-view 
@@ -260,6 +265,7 @@ export default {
      authenticated(val) {
        console.log(val);
       },
+       
 
     '$route' (to, from) {
       if (!this.auth.isAuthenticated()) {
@@ -268,6 +274,12 @@ export default {
         this.auth.logout();
       }
     }
+  },
+
+  computed: {
+   notificationCount() {
+      return this.$store.getters.getNewContactsCount;
+    },
   }
 }
 
