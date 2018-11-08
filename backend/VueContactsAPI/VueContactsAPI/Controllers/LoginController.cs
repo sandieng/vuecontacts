@@ -46,6 +46,9 @@ namespace VueContactsAPI.Controllers
 
             foreach (var login in loginList)
             {
+                var decryptedLoginName = Crypto.Decrypt(login.LoginName, _passPhrase);
+                login.LoginName = decryptedLoginName;
+
                 var decryptedPassword = Crypto.Decrypt(login.LoginPassword, _passPhrase);
                 login.LoginPassword = decryptedPassword;
             }
@@ -63,6 +66,9 @@ namespace VueContactsAPI.Controllers
 
             foreach (var login in loginList)
             {
+                var decryptedLoginName = Crypto.Decrypt(login.LoginName, _passPhrase);
+                login.LoginName = decryptedLoginName;
+
                 var decryptedPassword = Crypto.Decrypt(login.LoginPassword, _passPhrase);
                 login.LoginPassword = decryptedPassword;
             }
@@ -87,11 +93,14 @@ namespace VueContactsAPI.Controllers
 
             try
             {
-                var newContact = Mapper.Map<Login>(LoginVM);
-                var encryptedPassword = Crypto.Encrypt(newContact.LoginPassword, _passPhrase);
-                newContact.LoginPassword = encryptedPassword;
+                var newLogin = Mapper.Map<Login>(LoginVM);
+                var encryptedLoginName = Crypto.Encrypt(newLogin.LoginName, _passPhrase);
+                newLogin.LoginName = encryptedLoginName;
 
-                _loginRepository.Save(newContact);
+                var encryptedPassword = Crypto.Encrypt(newLogin.LoginPassword, _passPhrase);
+                newLogin.LoginPassword = encryptedPassword;
+
+                _loginRepository.Save(newLogin);
 
                 return Ok();
             }
@@ -117,11 +126,12 @@ namespace VueContactsAPI.Controllers
             var loginFound = _loginRepository.GetById(Login.Id);
             if (loginFound != null)
             {
+                var encryptedLoginName = Crypto.Encrypt(Login.LoginName, _passPhrase);
                 var encryptedPassword = Crypto.Encrypt(Login.LoginPassword, _passPhrase);
 
                 // Map updated details to the found Login
                 loginFound.Name = Login.Name;
-                loginFound.LoginName = Login.LoginName;
+                loginFound.LoginName = encryptedLoginName;
                 loginFound.LoginPassword = encryptedPassword;
                 loginFound.WebSiteUrl = Login.WebSiteUrl;
                 loginFound.Notes = Login.Notes;
